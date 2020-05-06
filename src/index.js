@@ -1,39 +1,77 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component, useState, useEffect} from 'react'
+import ReactDOM from 'react-dom'
+
 
 const App = () => {
-  return (
+  const [ value, setValue ] = useState(0);
+  const [ visible, setVisible ] = useState(true);
+
+  if (visible) {
+    return (
     <div>
-      <HookSwitcher />
+      <button 
+        onClick={() => {
+          return(
+            setValue(value => value + 1)  
+          )
+        }}>+</button>
+
+      <button 
+        onClick={() => {
+          return (
+            setVisible(false)
+          )
+        }}>hide</button>
+      <ClassCounter value={value} />
+      <HookCounter value={value}/>
+
     </div>
     )
+  } else {
+    return (
+      <button 
+        onClick={() => {
+          return (
+            setVisible(true)
+          )
+        }}>show</button>
+    )
+  }
 }
 
-const HookSwitcher = () => {
-  const [color, setColor] = useState('grey')
+class ClassCounter extends Component {
 
-  const [fontSize, setFontSize] = useState(14)
+  componentDidMount(){
+    console.log("ClassCounter - componentDidMount")
+  }
+
+  componentDidUpdate() {
+    console.log("ClassCounter - componentDidUpdate")
+  }
+
+  componentWillUnmount() {
+    console.log("ClassCounter - componentDidUnmount")
+  }
+
+  render() {
+    const { value } = this.props
+    return (
+      <div>
+        { value }
+      </div>
+    )
+  }
+}
+
+const HookCounter = ({ value }) => {
+  
+  useEffect(() => {
+    console.log("useEffect")
+    return (() => { console.log("clear useEffect")})
+  }, [ value ])
   return (
-    <div style={{
-      padding: '10px', 
-      backgroundColor: color,
-      fontSize: `${fontSize}px`
-      }}>
-      <button onClick={() => {return setColor("grey")}}>
-        Dark
-      </button>
-      <button onClick={() => {return setColor("white")}}>
-        Light
-      </button>
-      <button onClick={() => {return setFontSize((fontSize) => {
-        return fontSize + 2
-      })}}>
-        +
-      </button>
-      <button onClick={() => {return setFontSize((fontSize) => fontSize - 2)}}>
-        -
-      </button>
-      <p>Hello world!</p>
+    <div>
+      <p>{ value }</p>
     </div>
   )
 }
